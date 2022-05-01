@@ -1,8 +1,35 @@
-module.exports.home = function(req,res){
-    console.log(req.cookies);
+const Posts = require('../models/post');
 
-    res.cookie('userId',21);
-    return res.render('home',{
-        title : 'Home'
+module.exports.home = function(req,res){
+    // console.log(req.cookies);
+
+    // res.cookie('userId',21);
+
+    // Posts.find({}, function(err, posts){
+
+
+    //     return res.render('home', {
+    //         title: 'Code Social | Home',
+    //         posts: posts
+    //     });
+    // });
+
+
+    Posts.find({}).populate('User')
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user'
+        }
+    })
+    .exec(function (err, posts) {
+
+
+        return res.render('home', {
+            title: 'Code Social | Home',
+            posts: posts
+        });
     });
+
+    
 };
